@@ -149,11 +149,11 @@ which in this case is just the arithmetic mean since the two sample groups are i
 $. The tests returns a z score of 1.27, which gives us a $\approx 10\%$ probability for the results of group B to be generated from a distribution with higher
 conversion rate.
 While this value is low, it's usually not considered low enough to reach a definite conclusion. A z score of 1.65 would give a 5$\%$ probability,
-which is often considred a reliable indicator. In this case the problem seems to lie in the high conversion rate of the control group,
+which is often considered a reliable indicator. In this case the problem seems to lie in the high conversion rate of the control group,
 which requires group B to be pretty much "perfect" in its conversion rate. Given the sample available, 332 out of 333
-users would have had to play a song after account creation in order to suggest a statistical outperformance of group B. 
+users would have had to play a song after account creation in order to suggest a statistical out-performance of group B. 
 
-However, it is important to notice that the previous method is based on the assumption that the binomial distribution can be approximated with a gaussian one.
+However, it is important to notice that the previous method is based on the assumption that the binomial distribution can be approximated with a Gaussian one.
 Such approximation increases in validity the higher the sample size and the closer the probability is to 1/2. In our case we do have a significant sample size, but the 
 high conversion rate limits the validity of the approximation.
 
@@ -180,7 +180,7 @@ the higher weekly cost of group C to counterbalance the higher short-term unsubs
 
 
 An initial analysis can be done in a way similar to Question 2 in terms of whether the groups are performing differently in regard to subscription and unsubscription rates.
-Table \ref{tab:sub_unsub_rates} shows the numbers of scubscribed and unsubscribed users for each group, along with their rates (the unsubscription rates are based on the number of subscribed users, of course).
+Table \ref{tab:sub_unsub_rates} shows the numbers of subscribed and unsubscribed users for each group, along with their rates (the unsubscription rates are based on the number of subscribed users, of course).
 
 \begin{table}[htbp]
 \normalsize
@@ -235,7 +235,7 @@ What the estimator does is calculate the probability of survival by multiplying 
 are calculated using the number of deaths $n_{i}$ over the alive population $d_{i}$. The important aspect of this 
 estimator is that at the same time it does not require information on the actual functional form of the survival function
 and it also allows to approximate its variance. A similarly related concept is the hazard function, which measures
-the instanteneous failure rate for a single user: $ \lambda (t) = \frac{-S'(t)}{S(t)}
+the instantaneous failure rate for a single user: $ \lambda (t) = \frac{-S'(t)}{S(t)}
 $. This is in turn allows to calculate the Nelson-Aalen estimator, which estimates the cumulative function of $\lambda(t)$,that
 is the sum of all the risk of failure that users have experienced until time T:
 \begin{equation}
@@ -255,7 +255,7 @@ Fig.\ref{fig:survival} shows the fitting of both estimators, along with the erro
 the curves stabilize after 10/15 days at similar values. The estimators are telling us that the users
 either unsubscribe within a limited period of time (roughly 10 days) or else are likely to keep their subscription indefinitely. Statistically
 speaking, the absence of deaths in the $t \in [11,36]$ range is a strong indicator that users of both groups are extremely unlikely to randomly
-unsubcribe after the first 10 day period. 
+unsubscribe after the first 10 day period. 
 
 In the code example \ref{code:python_logRank} we can also see the result of a statistical test
 that compares the survival curves of the two groups, showing that there is no statistical difference between the groups.
