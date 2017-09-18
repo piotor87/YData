@@ -58,6 +58,7 @@ def plot_life(order = True, N = 20):
             ax.hlines(N - 1 - i, birthtimes[i], birthtimes[i] + lifetimes[i], color=c, lw=1)
             m = "|" if not event_observed[i] else 'o'
             ax.scatter((birthtimes[i]) + lifetimes[i], N - 1 - i, color=c, s=10, marker=m)
+            ax.scatter((birthtimes[i]),  N - 1 - i, color=c, s=10, marker='o')
 
         ax.tick_params(    
             axis='y',          # changes apply to the x-axis
