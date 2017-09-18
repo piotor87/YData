@@ -145,7 +145,7 @@ From there we can check the null hypothesis by performing a \textit{z test}
  z = \frac{p_{a}-p_{b}}{\sqrt{p(1-p)(\frac{1}{n_{a}} + \frac{1}{n_{b}})}}
 \end{equation}
 where $n_{a} = n_{b} = 333 $ is the sample size for each group and $ p = \frac{n_{a}p_{a} + n_{b}p_{b}}{ (n_{a} + n_{b})}$ is the weighed average of the two rates,
-which in this case is just the arithmetica mean since the two sample groups are identical in size: $p = (0.97898 + 0.99099)/2 = 0.9849445
+which in this case is just the arithmetic mean since the two sample groups are identical in size: $p = (0.97898 + 0.99099)/2 = 0.9849445
 $. The tests returns a z score of 1.27, which gives us a $\approx 10\%$ probability for the results of group B to be generated from a distribution with higher
 conversion rate.
 While this value is low, it's usually not considered low enough to reach a definite conclusion. A z score of 1.65 would give a 5$\%$ probability,
@@ -217,7 +217,7 @@ unsubscription rates is confirmed, the daily payment type becomes more profitabl
 This problem is linked to the known problem of \textit{survival analysis}, which aims at estimating "death times" were deaths represent the withdrawal of members from a certain group,
 in this case from the subscribed group. In our scenario, we are also facing the issue of censorship, i.e. the presence of users whose death might be not observed yet. In Fig.\ref{fig:lifetimes} we can see practically what that means: while the red lines show a birth (subscription)
 and a death (unsubscription), the blue lines do have a birth but are still missing a death time.
-\begin{figure}[htpb!]
+\begin{figure}[h!]
 \centering
 \includegraphics[width=.99\columnwidth]{lifetime.pdf}
 \caption{Example of lifetimes for 40 randomly selected users from group B (top) and group C (bottom).}
@@ -243,20 +243,22 @@ is the sum of all the risk of failure that users have experienced until time T:
 \end{equation}
 
 
-Fig.\ref{fig:survival} shows the fitting of both estimators, along with the errors. Both estimators shows that, for both groups,
-the curves stabilize after 10/15 days at similar values. The estimators are telling us that the users
-either unsubscribe within a limited period of time (roughly 10 days) or else are likely to keep their subscription indefinitely. Statistically
-speaking, the absence of deaths in the $t \in [11,36]$ range is a strong indicator that users are extremely unlike to randomly
-unsubcribe after the first 10 day period. In the code example \ref{code:python_logRank} we can also see the result of a statistical test
-that compares the survival curves of the two groups, showing that there is no statistical difference between the groups.
 
-\begin{figure}[htpb!]
+\begin{figure}[h!]
 \centering
-\includegraphics[scale = 0.8]{survival.pdf}
+\includegraphics[scale = 0.99]{survival.pdf}
 \caption{Survival function (top) and cumulative hazard function (bottom).}
 \label{fig:survival}
 \end{figure}
 
+Fig.\ref{fig:survival} shows the fitting of both estimators, along with the errors. Both estimators shows that, for both groups,
+the curves stabilize after 10/15 days at similar values. The estimators are telling us that the users
+either unsubscribe within a limited period of time (roughly 10 days) or else are likely to keep their subscription indefinitely. Statistically
+speaking, the absence of deaths in the $t \in [11,36]$ range is a strong indicator that users are extremely unlike to randomly
+unsubcribe after the first 10 day period. 
+
+In the code example \ref{code:python_logRank} we can also see the result of a statistical test
+that compares the survival curves of the two groups, showing that there is no statistical difference between the groups.
 \scriptsize
 \begin{lstlisting}[frame=single,caption=LogRank test \label{code:python_logRank}]
 results = logrank_test(b_life,c_life,b_events,c_events, alpha=.99)
