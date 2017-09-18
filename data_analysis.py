@@ -12,8 +12,7 @@ from matplotlib import pyplot as plt
 from verkko.plots import matplotlibHelperFunction as HF
 
 from lifelines import KaplanMeierFitter
-kmf = KaplanMeierFitter()
-
+from lifelines.plotting import add_at_risk_counts
 from lifelines import NelsonAalenFitter
 naf = NelsonAalenFitter()
 
@@ -98,7 +97,11 @@ def plot_survival():
 
     ax2.set_xlabel('Days from subscription')
     logrankData = []
+    kmfList = []
     for i,group in enumerate(groups):
+
+        kmf = KaplanMeierFitter()
+        kmfList.append(kmf)
         durations,observed = return_unsub_time_arrays(group)
         logrankData.append(durations)
         logrankData.append(observed)
@@ -106,11 +109,12 @@ def plot_survival():
         kmf.fit(durations, event_observed = observed, label = 'Group ' +str(group),ci_labels = ['lower bound','upper bound'])
         kmf.plot(ax = ax1, color = colors[i])
 
-        bandwidth = 5.
         naf.fit(durations, event_observed = observed, label = 'Group ' +str(group))
-        naf.plot(ax = ax2, color = colors[i], bandwidth = bandwidth)
+        naf.plot(ax = ax2, color = colors[i])
 
 
+
+    add_at_risk_counts(kmfList[0],kmfList[1], ax=ax1)
 
     from lifelines.statistics import logrank_test
 
