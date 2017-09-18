@@ -115,7 +115,6 @@ def plot_survival():
 
 
     add_at_risk_counts(kmfList[0],kmfList[1], ax=ax1)
-
     from lifelines.statistics import logrank_test
 
     results = logrank_test(logrankData[0],logrankData[2],logrankData[1],logrankData[3], alpha=.99)
