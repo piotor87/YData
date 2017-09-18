@@ -1,9 +1,10 @@
 import sqlite3,csv
 import numpy as np
-dataPath = '/home/pete/Desktop/Yousician/events.csv'
+
 import os
 cwd = os.getcwd() +'/'
 sqlitePath = cwd  +  'events.sqlite'
+dataPath = cwd + 'events.csv'
 import pylab
 import matplotlib as mpl
 mpl.use('TkAgg')
@@ -310,6 +311,13 @@ def return_answer_one():
         print float(entries)/subUsers
 
 
+
+def create_all():
+
+    create_database()
+    create_subscribed_table()
+    create_unsubscription_table()
+    create_account_creation_table()
 def create_database():
     '''
     Functions that creates a sqlite database from the events.
