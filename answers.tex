@@ -107,7 +107,8 @@ This method returns again an average of \textbf{3.55}.
 \textit{Does the group B have a better conversion rate between account created and
 the first song played than the control group?}
 
-\textbf{No. Group B has a higher conversion rate, but it is statistically not significant. }\\
+\textbf{No. Group B has a higher conversion rate, but it is statistically not significant. However, more data could
+change the picture.}\\
 
 In order to answer this question I started by doing a similar job as in code example \ref{code:pre_sub_table}, thus creating a table that stores the time stamp
 for the account creation. This allows me to check for individual uid activity after account creation. Similarly again, the SQL search is very similar to the 
@@ -158,7 +159,7 @@ high conversion rate limits the validity of the approximation.
 Another way to tackle the problem is to take the control group as a reference point to see whether its statistical properties would be
 able to justify the performance of group B. This can be simply done with a binomial test, as shown in code example \ref{code:binomial_test}. In this case, 
 the probability
-of obtaining 330 or more successes with the conversion rate of the control group is $\approx 8\%$, once again, coherently with what discussed before.
+of obtaining 330 or more successes with the conversion rate of the control group is $\approx 8\%$, coherently with what discussed before.
 
 \footnotesize
 \begin{lstlisting}[frame=single,caption= Binomial Test\label{code:binomial_test}]
@@ -168,8 +169,11 @@ scipy.stats.binom_test(330, 333, 326./333, alternative='greater')
 \normalsize
 
 It's also important to note that had the successes been just one more, this binomial test would have shown statistical significance
-for the two conversion rates being different. This means that even though the current data cannot show an out-performance by 
-group B, the result is on the "edge" of statistical signficance. 
+for the two conversion rates being different. The same would have happened with a sample size of 500 users for group B with the 
+same conversion rate.
+This means that even though the current data cannot show an out-performance by 
+group B, the result is on the "edge" of statistical signficance and further data should be collected in order to have stronger
+statistical results.
 
 \section*{Question 3}
 
