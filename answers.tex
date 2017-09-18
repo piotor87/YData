@@ -1,4 +1,4 @@
-\documentclass[paper=a4, fontsize=11pt]{report}
+\documentclass[paper=a4, fontsize=10pt]{report}
 
 \usepackage[english]{babel}
 \newcommand{\sql}{\textbf{SQL}}	
@@ -37,7 +37,7 @@ subscribes.}
 In order to obtain this result I needed a subscription time stamp for each user that subscribed. This was easily done with an SQL query:
 
 
-
+\footnotesize
 \begin{lstlisting}[frame=single,caption=Generate subscription table \label{code:sub_table}]
   CREATE TABLE  subscribed  AS
   SELECT uid,date
@@ -45,19 +45,20 @@ In order to obtain this result I needed a subscription time stamp for each user 
   WHERE event = 'subscribed'
         
 \end{lstlisting} 
+\normalsize
 
 This allows me to have a time stamp to be used in order to check which uid events took place before the user subscribed. The next step therefore was to return the number of pre-subscription events.
 
+\footnotesize
 \begin{lstlisting}[frame=single,caption=Return pre-sub events \label{code:pre_sub_table}]
-
  SELECT COUNT(*) 
  FROM subscribed 
  LEFT JOIN events
  USING (uid)
  WHERE events.date < subscribed.date
  AND  event in ('minigame_played','song_played')
-
 \end{lstlisting}
+\normalsize
 
 The script returns 2146 events, which divided by the number of subscriptions (605) gives me
 \textbf{3.55} songs or minigames on average before subscription.
@@ -65,8 +66,8 @@ The script returns 2146 events, which divided by the number of subscriptions (60
 A more elegant and direct way to solve the issue is to use SQL directly. This can be achieved by
 counting the events for each uid and then averaging.
 
+\footnotesize
 \begin{lstlisting}[frame=single,caption=Return SQL average \label{code:sql_average_table}]
-
  SELECT AVG(cnt)
  FROM (  
  SELECT count(*) AS cnt
@@ -76,12 +77,16 @@ counting the events for each uid and then averaging.
  AND event in ('minigame_played','song_played') 
  GROUP BY (uid)
  )
-  
 \end{lstlisting}
+\normalsize
 
-The result, for this implementation is different: \textbf{4.33}. This is because in this way of formulating the query the users who subscribed directly without first playing songs or games are not counted in the statistics. In order to obtain the same result as before however, one can use a simple trick to force the LEFT JOIN to return at least one event: the subscription event, which can be later be discarded.
+The result, for this implementation is different: \textbf{4.33}. This is because in this way of
+formulating the query the users who subscribed directly without first playing songs or 
+games are not counted in the statistics. In order to obtain the same result as before however, 
+one can use a simple trick to force the LEFT JOIN to return at least one event: the subscription event, which can 
+later be discarded.
 
-
+\footnotesize
 \begin{lstlisting}[frame=single,caption=Return SQL average - Fixed \label{code:sql_average_fixed_table}]
 
  SELECT AVG(cnt)
@@ -93,7 +98,7 @@ The result, for this implementation is different: \textbf{4.33}. This is because
  AND event in ('minigame_played','song_played','subscribed') 
  GROUP BY (uid) )
 \end{lstlisting}
-
+\normalsize
 This method returns again an average of \textbf{3.55}.
 
 
@@ -102,23 +107,24 @@ This method returns again an average of \textbf{3.55}.
 \textit{Does the group B have a better conversion rate between account created and
 the first song played than the control group?}
 
-\textbf{Group B has a slightly higher conversion rate, but which is statistically not significant.}\\
+\textbf{No. Group B has a slightly higher conversion rate, but it is statistically not significant.}\\
 
 In order to answer this question I started by doing a similar job as in code example \ref{code:pre_sub_table}, thus creating a table that stores the time stamp
 for the account creation. This allows me to check for individual uid activity after account creation. Similarly again, the SQL search is very similar to the 
 the previous question, where in this case I filter for \textit{song\_played} events after the account creation.
 
+
+\footnotesize
 \begin{lstlisting}[frame=single,caption=Return conversion rates \label{code:sql_average_fixed_table}]
-
-
 SELECT COUNT(DISTINCT(uid)) 
 FROM account 
 LEFT JOIN events USING (uid)
 WHERE events.date > account.date
 AND event = 'song_played'
 AND groupName = a/b
-   
 \end{lstlisting}
+\normalsize
+
 The query returns 326 and 330 for groups a and b respectively. Both groups have 333 users, thus giving us a very high conversion rate for both groups:
 \begin{itemize}
  \item Group A conversion rate: $p_{a} = 0.97898$
@@ -130,7 +136,7 @@ While the numbers are similar, suggesting no significant difference between the 
 further statistical test.
 
 
-In this case we can formulate the null hypothesis $p_{a} = p_{b}$ which means that both samples are taken from the same binomial distribution having identical
+In this case we want to test the null hypothesis $p_{a} = p_{b}$ which means that both samples are taken from the same binomial distribution having identical
 success rate.
 
 
@@ -151,14 +157,12 @@ Another way to tackle the problem is to take the control group as a reference po
 able to justify the performance of group B. This can be simply done with a binomial test, as shown in code example \ref{code:binomial_test}. In this case, the probability
 of obtaining 330 successes with the conversion rate of control is also $\approx 20\%$, once again, coherently with what discussed before.
 
+\footnotesize
 \begin{lstlisting}[frame=single,caption= Binomial Test\label{code:binomial_test}]
-
 scipy.stats.binom_test(330,n=333,p = 326/333.)
 0.17582542997318404
 \end{lstlisting}
-
-In conclusion, there is a good possibility that group B outpferforms the control group but the high conversion rate
-of the control group requires a larger sample in order to provide a definite conclusion. 
+\normalsize
 
 
 
@@ -174,6 +178,8 @@ An initial analysis can be done in a way similar to Question 2 in terms of wheth
 Table \ref{tab:sub_unsub_rates} shows the numbers of scubscribed and unsubscribed users for each group, along with their rates (the unsubscription rates are based on the number of subscribed users, of course).
 
 \begin{table}[htbp]
+\normalsize
+
   \centering
   \caption{Subscriptions and Unsubscriptions for Groups B and C}
     \begin{tabular}{ccccccc}
@@ -186,6 +192,7 @@ Table \ref{tab:sub_unsub_rates} shows the numbers of scubscribed and unsubscribe
     \end{tabular}%
   \label{tab:sub_unsub_rates}%
 \end{table}%
+\normalsize
 
 With these numbers we can check whether the subscription rates are statistically significantly different.
 
@@ -201,9 +208,7 @@ unsubscription rates is confirmed, the daily payment type becomes more profitabl
 
 
 This problem is linked to the known problem of \textit{survival analysis}, which aims at estimating "death times" were deaths represent the withdrawal of members from a certain group,
-in this case from the subscribed group. In our scenario, we are also facing the issue of censorhsip, i.e. the presence of users whose death might be not observed yet.
-
-In Fig.\ref{fig:lifetimes} we can see practically what that means: while the red lines show a birth (subscription)
+in this case from the subscribed group. In our scenario, we are also facing the issue of censorhsip, i.e. the presence of users whose death might be not observed yet. In Fig.\ref{fig:lifetimes} we can see practically what that means: while the red lines show a birth (subscription)
 and a death (unsubscription), the blue lines do have a birth but are still missing a death time.
 \begin{figure}[htpb!]
 \centering
