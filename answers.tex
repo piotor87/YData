@@ -144,23 +144,28 @@ From there we can check the null hypothesis by performing a \textit{z test}
 \begin{equation}
  z = \frac{p_{a}-p_{b}}{\sqrt{p(1-p)(\frac{1}{n_{a}} + \frac{1}{n_{b}})}}
 \end{equation}
-where $n_{a} = n_{b} = 333 $ is the sample size for each group and $ p = n_{a}p_{a} + n_{b}p_{b}/ (n_{a} + n_{b})$ is the weighed average of the two rates,
+where $n_{a} = n_{b} = 333 $ is the sample size for each group and $ p = \frac{n_{a}p_{a} + n_{b}p_{b}}{ (n_{a} + n_{b})}$ is the weighed average of the two rates,
 which in this case is just the arithmetica mean since the two sample groups are identical in size: $p = (0.97898 + 0.99099)/2 = 0.9849445
-$. The tests returns a z score of 1.27, which gives us a $\approx 20\%$ probability for the two results to be a product of the 
-same distribution.
-While this value is low, it's usually not considered low enough to reach a definite conclusion. A z score of 1.96 would give a 5$\%$ probability,
+$. The tests returns a z score of 1.27, which gives us a $\approx 10\%$ probability for the results of group B to be generated from a distribution with higher
+conversion rate.
+While this value is low, it's usually not considered low enough to reach a definite conclusion. A z score of 1.65 would give a 5$\%$ probability,
 which is often considred a reliable indicator. In this case the problem seems to lie in the high conversion rate of the control group,
-which requires group b to be pretty much "perfect" in its conversion rate. Given the sample available, 332 out of 333
+which requires group B to be pretty much "perfect" in its conversion rate. Given the sample available, 332 out of 333
 users would have had to play a song after account creation in order to suggest a statistical outperformance of group B. 
 
+However, it is important to notice that the previous method is based on the assumption that the binomial distribution can be approximated with a gaussian one.
+Such approximation increases in validity the higher the sample size and the closer the probability is to 1/2. In our case we do have a significant sample size, but the 
+high conversion rate limits the validity of the approximation.
+
 Another way to tackle the problem is to take the control group as a reference point to see whether its statistical properties would be
-able to justify the performance of group B. This can be simply done with a binomial test, as shown in code example \ref{code:binomial_test}. In this case, the probability
-of obtaining 330 successes with the conversion rate of control is also $\approx 20\%$, once again, coherently with what discussed before.
+able to justify the performance of group B. This can be simply done with a binomial test, as shown in code example \ref{code:binomial_test}. In this case, 
+the probability
+of obtaining 330 or more successes with the conversion rate of the control group is $\approx 8\%$, once again, coherently with what discussed before.
 
 \footnotesize
 \begin{lstlisting}[frame=single,caption= Binomial Test\label{code:binomial_test}]
-scipy.stats.binom_test(330,n=333,p = 326/333.)
-0.17582542997318404
+scipy.stats.binom_test(330, 333, 326./333, alternative='greater')
+0.079568660226078308
 \end{lstlisting}
 \normalsize
 
