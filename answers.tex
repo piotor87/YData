@@ -107,7 +107,7 @@ This method returns again an average of \textbf{3.55}.
 \textit{Does the group B have a better conversion rate between account created and
 the first song played than the control group?}
 
-\textbf{No. Group B has a higher conversion rate, but it is statistically not significant.}\\
+\textbf{No. Group B has a higher conversion rate, but it is statistically not significant. }\\
 
 In order to answer this question I started by doing a similar job as in code example \ref{code:pre_sub_table}, thus creating a table that stores the time stamp
 for the account creation. This allows me to check for individual uid activity after account creation. Similarly again, the SQL search is very similar to the 
@@ -150,9 +150,7 @@ $. The tests returns a z score of 1.27, which gives us a $\approx 10\%$ probabil
 conversion rate.
 While this value is low, it's usually not considered low enough to reach a definite conclusion. A z score of 1.65 would give a 5$\%$ probability,
 which is often considered a reliable indicator. In this case the problem seems to lie in the high conversion rate of the control group,
-which requires group B to be pretty much "perfect" in its conversion rate. Given the sample available, 332 out of 333
-users would have had to play a song after account creation in order to suggest a statistical out-performance of group B. 
-
+which requires group B to be pretty much "perfect" in its conversion rate.
 However, it is important to notice that the previous method is based on the assumption that the binomial distribution can be approximated with a Gaussian one.
 Such approximation increases in validity the higher the sample size and the closer the probability is to 1/2. In our case we do have a significant sample size, but the 
 high conversion rate limits the validity of the approximation.
@@ -169,7 +167,9 @@ scipy.stats.binom_test(330, 333, 326./333, alternative='greater')
 \end{lstlisting}
 \normalsize
 
-
+It's also important to note that had the successes been just one more, this binomial test would have shown statistical significance
+for the two conversion rates being different. This means that even though the current data cannot show an out-performance by 
+group B, the result is on the "edge" of statistical signficance. 
 
 \section*{Question 3}
 
