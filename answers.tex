@@ -200,15 +200,17 @@ The z-score for the hypothesis that the two subscription distributions are diffe
 subscriptions over the other. The same result applies to the unsubscription rate, which has a z score of 0.145, also revealing no statistical difference.
 
 We can therefore conclude, on a first level of analysis, that the two groups do not show to perform differently in terms of subscription rates and unsubscription rates. If this 
-pattern is confirmed, the difference in revenue for each group ultimately depends on how long the users remain subscribed. In fact, group C has a higher price on a weekly basis, which is
-however counterbalanced by the fact that an early unsubscription during the week will be less profitable compared to the unsubscriptions for group B. For each week
-of subscription, group C generates 5,6€ vs 5€ from group B. If we assume that there is no preferred day of unsubscription in the 7 days interval, group B will give a 1.8€ average
-revenue per user due to the asymmetry in the payments. Given also the 0.6€ weekly extra revenue for group C, we can therefore conclude that if the similarity in subscription and
+pattern is confirmed, the difference in revenue for each group ultimately depends on how long the users remain subscribed. In fact, group C has a higher
+price on a weekly basis (5,6€ vs 5€), which is
+however counterbalanced by the fact that an early unsubscription during the week will be less profitable compared to the unsubscriptions for group B. 
+If we assume that there is no preferred day of unsubscription in the 7 days interval, group B will give a $ \frac{\sum_{i=1}^{7} 5-0.8i}{7} =1.8$€ average
+extra revenue per user due to the asymmetry in the payments. Given also the 0.6€ weekly extra revenue for group C, we can therefore conclude that if the similarity 
+in subscription and
 unsubscription rates is confirmed, the daily payment type becomes more profitable only starting from the beginning of the fourth week. The question we have is thus the following: \textit{Do users reach week 4 on average in the two groups?}
 
 
 This problem is linked to the known problem of \textit{survival analysis}, which aims at estimating "death times" were deaths represent the withdrawal of members from a certain group,
-in this case from the subscribed group. In our scenario, we are also facing the issue of censorhsip, i.e. the presence of users whose death might be not observed yet. In Fig.\ref{fig:lifetimes} we can see practically what that means: while the red lines show a birth (subscription)
+in this case from the subscribed group. In our scenario, we are also facing the issue of censorship, i.e. the presence of users whose death might be not observed yet. In Fig.\ref{fig:lifetimes} we can see practically what that means: while the red lines show a birth (subscription)
 and a death (unsubscription), the blue lines do have a birth but are still missing a death time.
 \begin{figure}[htpb!]
 \centering
