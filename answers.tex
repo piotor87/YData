@@ -211,11 +211,11 @@ however counterbalanced by the fact that an early unsubscription during the week
 If we assume that there is no preferred day of unsubscription in the 7 days interval, group B will give a $ \frac{\sum_{i=1}^{7} 5-0.8i}{7} =1.8$€ average
 extra revenue per user due to the asymmetry in the payments. Given also the 0.6€ weekly extra revenue for group C, we can therefore conclude that if the similarity 
 in subscription and
-unsubscription rates is confirmed, the daily payment type becomes more profitable only starting from the beginning of the fourth week. The question we have is thus the following: \textit{Do users reach week 4 on average in the two groups?}
+unsubscription rates is confirmed, the daily payment type becomes more profitable only starting from the beginning of the fourth week. 
+Is it the case with our data?
 
-
-This problem is linked to the known problem of \textit{survival analysis}, which aims at estimating "death times" were deaths represent the withdrawal of members from a certain group,
-in this case from the subscribed group. In our scenario, we are also facing the issue of censorship, i.e. the presence of users whose death might be not observed yet. In Fig.\ref{fig:lifetimes} we can see practically what that means: while the red lines show a birth (subscription)
+This problem is linked to the known problem of \textit{survival analysis}, which aims at estimating "death times" where deaths represent the withdrawal of members from a certain group,
+in this case from the subscribed group. In our scenario, we are also facing the issue of censorship, i.e. the presence of users whose death might not have been observed yet. In Fig.\ref{fig:lifetimes} we can see practically what that means: while the red lines show a birth (subscription)
 and a death (unsubscription), the blue lines do have a birth but are still missing a death time.
 \begin{figure}[h!]
 \centering
@@ -231,8 +231,8 @@ with a non-parametric statistic called the Kaplan-Meier estimator, which is defi
 \end{equation}
 
 
-What the estimator does is calculate the probability of survival by multiplying the death probability at each interval, which
-is calculated using the number of deaths $n_{i}$ over the alive population $d_{i}$. The important aspect of this 
+What the estimator does is calculate the probability of survival by multiplying the death probabilities in each previous time interval, which
+are calculated using the number of deaths $n_{i}$ over the alive population $d_{i}$. The important aspect of this 
 estimator is that at the same time it does not require information on the actual functional form of the survival function
 and it also allows to approximate its variance. A similarly related concept is the hazard function, which measures
 the instanteneous failure rate for a single user: $ \lambda (t) = \frac{-S'(t)}{S(t)}
