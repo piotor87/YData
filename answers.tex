@@ -7,11 +7,12 @@
 \usepackage{booktabs}
 \usepackage[utf8x]{inputenc}
 \usepackage{lmodern,textcomp}
-
+\setlength\parindent{0pt}
 		% English language/hyphenation	
 \usepackage{amsmath,amsfonts,amsthm} % Math packages
 \usepackage[pdftex]{graphicx}	
 \usepackage{url}
+\usepackage{caption}
 
 \title{Small Exercise}
 \author{Pietro della Briotta Parolo}
@@ -221,10 +222,13 @@ Is it the case with our data?
 This problem is linked to the known problem of \textit{survival analysis}, which aims at estimating "death times" where deaths represent the withdrawal of members from a certain group,
 in this case from the subscribed group. In our scenario, we are also facing the issue of censorship, i.e. the presence of users whose death might not have been observed yet. In Fig.\ref{fig:lifetimes} we can see practically what that means: while the red lines show a birth (subscription)
 and a death (unsubscription), the blue lines do have a birth but are still missing a death time.
+
 \begin{figure}[h!]
 \centering
+\captionsetup{justification=centering}
 \includegraphics[width=.99\columnwidth]{lifetime.pdf}
-\caption{Example of lifetimes for 40 randomly selected users from group B (top) and group C (bottom).}
+\caption{Example of lifetimes for 40 randomly selected users from group B (top) and group C (bottom). Red lines
+correspond to users who have unsubscribed, while blue lines correspond to users who haven't.}
 \label{fig:lifetimes}
 \end{figure}
 
@@ -250,19 +254,28 @@ is the sum of all the risk of failure that users have experienced until time T:
 
 \begin{figure}[h!]
 \centering
+\captionsetup{justification=centering}
 \includegraphics[scale = 0.99]{survival.pdf}
-\caption{Survival function (top) and cumulative hazard function (bottom).}
+\caption{Survival function (top) and cumulative hazard function (bottom). The shaded area corresponds to a $95\%$ confidence
+interval.}
 \label{fig:survival}
 \end{figure}
 
-Fig.\ref{fig:survival} shows the fitting of both estimators, along with the errors. Both estimators shows that, for both groups,
-the curves stabilize after 10/15 days at similar values. The estimators are telling us that the users
-either unsubscribe within a limited period of time (roughly 10 days) or else are likely to keep their subscription indefinitely. Statistically
-speaking, the absence of deaths in the $t \in [11,36]$ range is a strong indicator that users of both groups are extremely unlikely to randomly
-unsubscribe after the first 10 day period. 
+Fig.\ref{fig:survival} shows the fitting of both estimators, along with the errors. We get two important pieces of information
+from this plots:
+\begin{itemize}
+ \item Each group's curve lies within the confidence interval of the other group's curve, thus indicating that there is no difference in unsubscription dynamics between the two groups.
+ In the code example \ref{code:python_logRank} we can also see the result of a statistical test
+that compares the survival curves of the two groups, showing that there is no significant statistical difference.
 
-In the code example \ref{code:python_logRank} we can also see the result of a statistical test
-that compares the survival curves of the two groups, showing that there is no statistical difference between the groups.
+ \item  Users either unsubscribe within a limited period of time (roughly 2 weeks) or else are likely to keep their subscription indefinitely. Statistically
+speaking, the absence of deaths in the $t \in [16,36]$ range is a strong indicator that users of both groups are extremely unlikely to randomly
+unsubscribe after the first two week period.
+\end{itemize}
+
+
+
+
 \scriptsize
 \begin{lstlisting}[frame=single,caption=LogRank test \label{code:python_logRank}]
 results = logrank_test(b_life,c_life,b_events,c_events, alpha=.99)
@@ -281,6 +294,8 @@ Results
 \end{lstlisting}
 
 \normalsize
+
+
 To summarize we have seen that:
 \begin{itemize}
  \item There is no statistical difference between the subscription and unsubscription rates in the two groups
