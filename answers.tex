@@ -125,7 +125,7 @@ AND groupName = (?)
 \end{lstlisting}
 \normalsize
 
-Table.\ref{tab:conversion_rates} shows the data about the two groups.
+Table \ref{tab:conversion_rates} shows the data about the two groups.
 \begin{table}[htbp]
 \normalsize
 
@@ -168,7 +168,8 @@ high conversion rate limits the validity of the approximation.
 Another way to tackle the problem is to take the control group as a reference point to see whether its statistical properties would be
 able to justify the performance of group B. This can be simply done with a binomial test, as shown in code example \ref{code:binomial_test}. In this case, 
 the probability
-of obtaining 330 or more successes with the conversion rate of the control group is $\approx 8\%$, coherently with what discussed before.6
+of obtaining 330 or more successes with the conversion rate of the control group is $\approx 8\%$, 
+coherently with what discussed before.
 
 \footnotesize
 \begin{lstlisting}[frame=single,caption= Binomial Test\label{code:binomial_test}]
