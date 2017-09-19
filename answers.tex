@@ -30,8 +30,7 @@ I decided to add an index for each \textit{uid} in order to be able to perform u
 
 \section*{Question 1}
 
-\textit{ Calculate the average number of song/minigame\_plays before a user 
-subscribes.}
+\textit{ Calculate the average number of song/minigame\_plays before a user subscribes.}
 
 \textbf{3.55 or 4.33 according to whether users who create an account without playing songs or minigames are included.}\\
 
@@ -105,8 +104,7 @@ This method returns again an average of \textbf{3.55}.
 
 \section*{Question 2}
 
-\textit{Does the group B have a better conversion rate between account created and
-the first song played than the control group?}
+\textit{Does the group B have a better conversion rate between account created and the first song played than the control group?}
 
 \textbf{No. Group B has a higher conversion rate, but it is statistically not significant. However, more data could
 change the picture.}\\
@@ -147,14 +145,12 @@ Table.\ref{tab:conversion_rates} shows the data about the two groups.
 While the numbers are similar, suggesting no significant difference between the two groups, one needs to take into account the sample size and perform
 further statistical test. Also, I took a look at whether it's likely that the users who have not played a song yet might
 do it later. I noticed that the maximum number of days between account creation and first song played is $\approx 12$, with the mean
-being of 1. However, the youngest account creation without a song played is 21 days old. We can therefore safely assume,
-
+being of 1. However, the most recent account creation without a song played is 21 days old and the longest any of those
+users has used the app after account creation is 4 days. We can therefore safely assume, that the missing users are not likely
+to play a song anytime soon.
 
 In this case we want to test the null hypothesis $p_{a} = p_{b}$ which means that both samples are taken from the same binomial distribution having identical
-success rate.
-
-
-From there we can check the null hypothesis by performing a \textit{z test}
+ success rate by performing a \textit{z test}
 \begin{equation}
  z = \frac{p_{a}-p_{b}}{\sqrt{p(1-p)(\frac{1}{n_{a}} + \frac{1}{n_{b}})}}
 \end{equation}
@@ -188,11 +184,12 @@ This means that even though the current data cannot show an out-performance by
 group B, the result is on the "edge" of statistical signficance and further data should be collected in order to have stronger
 statistical results.
 
-NB. I found it unclear from the assignment whether the conversion rate meant the number of probability of
+\vspace{1cm}
+NB. I found it unclear from the assignment whether the conversion rate meant the probability of
 playing a song after creating an account or the opposite, that is the probability of opening an account after
 playing the first song. I also checked the latter scenario, which however turned out to be statistically irrelevant.
-No user has opened an account *after* playing a song. There are only 4 users who did not open an account and did play a song.
-However, in this case, the conversion rate is $0\%$ and cannot be handled statistically.
+No user has opened an account *after* playing a song. There are only 4 users who did play a song and did not create an account.
+However, in this case, the conversion rate is $0\%$ and the problem cannot be handled statistically.
 
 \section*{Question 3}
 
@@ -237,18 +234,20 @@ in subscription and
 unsubscription rates is confirmed, the daily payment type becomes more profitable only starting from the beginning of the fourth week. 
 Is it the case with our data?
 
-This problem is linked to the known problem of \textit{survival analysis}, which aims at estimating "death times" where deaths represent the withdrawal of members from a certain group,
-in this case from the subscribed group. In our scenario, we are also facing the issue of censorship, i.e. the presence of users whose death might not have been observed yet. In Fig.\ref{fig:lifetimes} we can see practically what that means: while the red lines show a birth (subscription)
-and a death (unsubscription), the blue lines do have a birth but are still missing a death time.
-
 \begin{figure}[h!]
 \centering
 \captionsetup{justification=centering}
-\includegraphics[width=.99\columnwidth]{lifetime.pdf}
+\includegraphics[width=.9\columnwidth]{lifetime.pdf}
 \caption{Example of lifetimes for 40 randomly selected users from group B (top) and group C (bottom). Red lines
 correspond to users who have unsubscribed, while blue lines correspond to users who haven't.}
 \label{fig:lifetimes}
 \end{figure}
+
+
+This problem is linked to the known problem of \textit{survival analysis}, which aims at estimating "death times" where deaths represent the withdrawal of members from a certain group,
+in this case from the subscribed group. In our scenario, we are also facing the issue of censorship, i.e. the presence of users whose death might not have been observed yet. In Fig.\ref{fig:lifetimes} we can see practically what that means: while the red lines show a birth (subscription)
+and a death (unsubscription), the blue lines do have a birth but are still missing a death time.
+
 
 The function that gives the probability of an user to survive time T is called survival function and it can be estimated
 with a non-parametric statistic called the Kaplan-Meier estimator, which is defined as:
@@ -273,17 +272,18 @@ is the sum of all the risk of failure that users have experienced until time T:
 \begin{figure}[h!]
 \centering
 \captionsetup{justification=centering}
-\includegraphics[scale = 0.99]{survival.pdf}
+\includegraphics[scale = 0.9]{survival.pdf}
 \caption{Survival function (top) and cumulative hazard function (bottom). The shaded area corresponds to a $95\%$ confidence
 interval.}
 \label{fig:survival}
 \end{figure}
 
+
 Fig.\ref{fig:survival} shows the fitting of both estimators, along with the errors. We get two important pieces of information
 from this plots:
 \begin{itemize}
  \item Each group's curve lies within the confidence interval of the other group's curve, thus indicating that there is no difference in unsubscription dynamics between the two groups.
- In the code example \ref{code:python_logRank} we can also see the result of a statistical test
+ In code example \ref{code:python_logRank} we can also see the result of a statistical test
 that compares the survival curves of the two groups, showing that there is no significant statistical difference.
 
  \item  Users either unsubscribe within an initial period of time of roughly 2 weeks or else are likely to keep their subscription indefinitely. Statistically
@@ -291,29 +291,24 @@ speaking, the absence of deaths in the $t \in [16,36]$ range is a strong indicat
 unsubscribe after the first two week period.
 \end{itemize}
 
-
-
-
 \scriptsize
 \begin{lstlisting}[frame=single,caption=LogRank test \label{code:python_logRank}]
 results = logrank_test(b_life,c_life,b_events,c_events, alpha=.99)
 results.print_summary()
-
 Results
    df: 1
    alpha: 0.99
    t 0: -1s
    test: logrank
    null distribution: chi squared
-
     p-value | test statistic |  test result       |  is significant
     0.53285 |         0.389  | Cannot Reject Null |       False       
 
 \end{lstlisting}
 
+
+
 \normalsize
-
-
 To summarize we have seen that:
 \begin{itemize}
  \item There is no statistical difference between the subscription and unsubscription rates in the two groups.
@@ -325,6 +320,8 @@ To summarize we have seen that:
 
 We can thus conclude that, since the payment option of group C does not influence the subscription/unsubscription rates or dynamics, its
 higher weekly cost will eventually make it more profitable.
+
+
 
 
 \end{document}
