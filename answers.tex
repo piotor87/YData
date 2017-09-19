@@ -196,9 +196,10 @@ statistical results.
 
 \textit{In your opinion, is the experiment of the group C bringing more money to the company? Please explain why.}
 
-\textbf{Yes. More than $60\%$ of the subscribed users in both groups are likely to remain subscribed indefinitely, allowing
-the higher weekly cost of group C to counterbalance the higher short-term unsubscription costs of group B.}\\
-
+\textbf{Group C is at least as profitable as group B and probably more. So far group B has brought more money in, however, given the unsubscription rates,
+group C becomes statistically as profitable as group B starting from week 5 and becomes constantly more profitable from week 10.
+Even though our data does not cover users' timelines that long, we have no indicator that users from either group
+should unsubcribe anytime soon.}\\
 
 
 Table \ref{tab:sub_unsub_rates} shows the numbers of subscribed and unsubscribed users for each group, along with their rates (the unsubscription rates are based on the number of subscribed users, of course).
@@ -228,24 +229,58 @@ subscriptions over the other. The same result applies to the unsubscription rate
 We can therefore conclude, on a first level of analysis, that the two groups do not appear to perform differently in terms of subscription rates and unsubscription rates. If this 
 pattern is confirmed, the difference in revenue for each group ultimately depends on how long the users remain subscribed. In fact, group C has a higher
 price on a weekly basis (5,6€ vs 5€), which is
-however counterbalanced by the fact that an early unsubscription during the week will be less profitable compared to the unsubscriptions for group B. 
-If we assume that there is no preferred day of unsubscription in the 7 days interval, group B will give a $ \frac{\sum_{i=1}^{7} 5-0.8i}{7} =1.8$€ average
-extra revenue per user due to the asymmetry in the payments. Given also the 0.6€ weekly extra revenue for group C, we can therefore conclude that if the similarity 
-in subscription and
-unsubscription rates is confirmed, the daily payment type becomes more profitable only starting from the beginning of the fourth week. 
-However,that's not the end of the story:
+however counterbalanced by the fact that an early unsubscription during the week will be less profitable compared to the unsubscriptions for group B. But how much time is required
+for the payment of group C to become profitable and do users reach that time?
+
+In order to answer those questions we need to come up with a way to estimate some scenarios for the payoff curves of the two groups.
+Let's assume that for both groups all users that unsubscribe do so during the first week (which is coherent with the data available). 
+For group B we can therefore conclude that the average revenue in function of time will be:
+
+
+\begin{equation}
+\begin{split}
+ P_{B}(T) & = (0.37 \cdot N \cdot 5 + N \cdot 0.63  \cdot  \hspace{1mm}\mathrm{ceil} (\frac{T}{7}) )/N \\
+ & = 5(0.37+0.63  \cdot  \hspace{1mm}\mathrm{ceil} (\frac{T}{7})) \\
+ \end{split}
+\end{equation}
+
+For group C we can create two scenarios. In the worst case scenario all users unsubcribe at the worst time possible,i.e. on the first day. This gives us an average revenue of:
+\begin{equation}
+\begin{split}
+ P_{C_{\!^{\_}}}(T) & = (0.37 \cdot N \cdot 0.8 + N \cdot 0.63 \cdot T \cdot 0.8)/N \\
+ & = 0.8 \cdot (0.37 + 0.63 \cdot T) \\
+ \end{split}
+\end{equation}
+
+Similarly, we can consider a better case average scenario, in which all the unsibscribers are quitting uniformly across the week.
+This leads to an average payment for the quitters of $\sum_{i=i}^{7} \frac{0.8i}{7} = 3.2$
+\begin{equation}
+\begin{split}
+ P_{C_{+}}(T) & = (0.37 \cdot N \cdot 3.2 + N \cdot 0.63 \cdot T \cdot 0.8)/N \\
+ & = 0.37 \cdot 3.2 + 0.63 \cdot T \cdot 0.8 \\
+ \end{split}
+\end{equation}
+
+Fig. \ref{fig:profit} shows the evolution in time of this measures. We can see that, as expected, the curve for 
+group B is a step function, while for group we have two straight lines with equal linear coefficient and different intercept. This
+creates a "corridor of uncertaintty" in which the real payoff curve must reside. We can see that initially
+the step function lies above the corridor. It's only at the beginning of week 3 that the best case scenario 
+for group B has similar values. However, the line for the worst case scenario does not achieve the same before the end
+of week 5. Between week 5 annd week 10 there is a transition phase in which the curves are constantly overtaking each other, until
+the whole corridor of group C become stable above the red line.
 
 \begin{figure}[h!]
 \centering
 \captionsetup{justification=centering}
 \includegraphics[width=.9\columnwidth]{profit.pdf}
-\caption{Average Profit}
+\caption{Payoff curves by group}
 \label{fig:profit}
 \end{figure}
 
 
-Is it the case with our data?
-
+It appears thefore evident that if users on average unsubscribe before week 5, group B will be more profitable, between
+week 5 and week 10 the results will depend on the unsubscription pattern of group C in the early days, while after week 10 group C
+will become always more profitable. It is therefore necessary to try to gues
 \begin{figure}[h!]
 \centering
 \captionsetup{justification=centering}
@@ -325,15 +360,14 @@ To summarize we have seen that:
 \begin{itemize}
  \item There is no statistical difference between the subscription and unsubscription rates in the two groups.
  \item The profitability of one group over the other depends on how long the users remain within the system.
- \item The critical time after which group C statistically is more profitable than group B is of 3 weeks.
-  \item There is no statistical difference between the unsubscription dynamics in the two groups.
+ \item The critical time after which group C statistically is more profitable than group B is of 5 weeks in the best case scenario and
+ 10 in the worst case scenario.
+  \item There is no statistical difference between the unsubscription dynamics in the two groups over time.
  \item Users most likely either unsubscribe in the first 14 days or else will remain subscribed indefinitely.
 \end{itemize}
 
 We can thus conclude that, since the payment option of group C does not influence the subscription/unsubscription rates or dynamics, its
-higher weekly cost will eventually make it more profitable.
-
-If we look at the numbers at stake in our example, at the moment group B has 
+higher weekly cost will eventually make it more profitable. 
 
 
 

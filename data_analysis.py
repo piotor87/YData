@@ -1,6 +1,6 @@
 import sqlite3,csv
 import numpy as np
-
+import pandas as ps
 import os
 cwd = os.getcwd() +'/'
 sqlitePath = cwd  +  'events.sqlite'
@@ -11,6 +11,7 @@ mpl.use('TkAgg')
 from matplotlib import pyplot as plt
 from verkko.plots import matplotlibHelperFunction as HF
 
+from lifelines import AalenAdditiveFitter 
 from lifelines.statistics import logrank_test
 from lifelines import KaplanMeierFitter
 from lifelines.plotting import add_at_risk_counts
@@ -129,7 +130,7 @@ def plot_survival():
         naf.plot(ax = ax2, color = colors[i])
         kmf.plot(ax = ax1, color = colors[i])
 
-
+        
     add_at_risk_counts(kmfList[0],kmfList[1], ax=ax1)
 
     results = logrank_test(logrankData[0],logrankData[2],logrankData[1],logrankData[3], alpha=.99)
@@ -141,28 +142,24 @@ def plot_survival():
     ax2.legend(loc = 'lower right')
     ax1.set_ylim([0,1])
     fig.savefig(finalFigPath)
-    plt.close()
                 
 
 
-    return None
 
 def profit(T,groupName = 'b',worstCase = 'True'):
 
-
     if  groupName =='b':
-        return 5*(0.36 + 0.64*np.ceil(T/7.))
-    if groupName =='c':
-                
+        return 5*(0.37 + 0.63*np.ceil(T/7.))
+    if groupName =='c':                
         if worstCase is False:
-           c =  np.average(np.arange(1,7)*0.8)
-           return (0.36+c + 0.64*T)
+           c =  np.average(np.arange(1,8)*0.8)
+           return (0.37*c + 0.63*T*0.8)
 
         else:
-            return 0.8*(0.36+0.64*T)
+            return 0.8*(0.37+0.63*T)
 
 
-def plot_time(T = 42):
+def plot_time(weeks = 11):
     '''
     Plots an example of the typical birth/death mechanics for groups B and C
     '''
@@ -178,20 +175,28 @@ def plot_time(T = 42):
     gs = mpl.gridspec.GridSpec(1, 1)
 
     ax = fig.add_subplot(gs[0, 0] )
-  
+    
+    time = np.arange(weeks*7)+1
+    profitB = tFunc(time,'b')
+    profitC = tFunc(time,'c',worstCase = True)
+    profitBestC= tFunc(time,'c',worstCase = False)
+          
+    ax.step(time,profitB, 'r',label = r'$P_{B}(T)$')
+    ax.plot(time,profitC, 'b--', label = r'$P_{C_{\!^{\_}}}(T) $')
+    ax.plot(time,profitBestC, 'b+', label = 'P_{C_{+}}(T) ')
+    
+    ax.fill_between(time, profitC, profitBestC, alpha = 0.1)
 
-    groups = ['b','c'] 
-    time = np.arange(T)+1
-    for i,groupName in enumerate(groups):
+    ax.set_xlabel('Time in Weeks')
+    ax.set_ylabel('Average Income per User')
 
-        profitB = tFunc(time,'b')
-        profitC = tFunc(time,'c',worstCase = True)
-        profitBestC= tFunc(time,'c',worstCase = False)
-        
-        
-        ax.plot(time,profitB, 'ro')
-        ax.plot(time,profitC, 'bo')
-        ax.plot(time,profitBestC, 'ko')
+    r = np.arange(1,weeks+1)
+    ticks_pos = [-2.5+7*i for i in r]
+    print ticks_pos
+
+    ticks_labels = r
+    plt.xticks([7*i+1 for i in r], ticks_labels)
+    ax.legend(loc = 'lower right')
     fig.savefig(finalFigPath)
     plt.close()
 
@@ -338,15 +343,6 @@ def return_answer_one():
         print data
 
         
-        cmd = """
-        SELECT AVG(cnt)
-        FROM (
-        SELECT count(*) -1  AS cnt
-        FROM subscribed 
-        LEFT JOIN events USING (uid)
-        WHERE (events.date <= subscribed.date) AND event in ('minigame_played','song_played','subscribed') 
-        GROUP BY (uid) )
-        """
         cmd = """
         SELECT AVG(cnt)
         FROM (
