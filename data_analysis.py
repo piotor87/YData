@@ -20,6 +20,9 @@ naf = NelsonAalenFitter()
 
 
 def plot_life(order = True, N = 20):
+    '''
+    Plots an example of the typical birth/death mechanics for groups B and C
+    '''
 
     
     pylab.ioff()
@@ -33,17 +36,21 @@ def plot_life(order = True, N = 20):
     ax1 = fig.add_subplot(gs[0, 0] )
     ax2 = fig.add_subplot(gs[1, 0] )
     axes = [ax1,ax2]
-    groups = ['b','c']
-            
+    
 
+    groups = ['b','c'] 
     for i,ax in enumerate(axes):
+
         groupName = groups[i]
+
+        #import data
         lifetimes,observed = return_unsub_time_arrays(groupName)
+        birthtimes = return_birthdays(groupName)
+
+        #shuffle
         idx = np.random.choice(np.arange(len(lifetimes)), N, replace=False)
         lifetimes = np.array(lifetimes[idx])
         event_observed = np.array(observed[idx])
-        
-        birthtimes = return_birthdays(groupName)
         birthtimes = birthtimes[idx]
         
         if order:
