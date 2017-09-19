@@ -147,16 +147,19 @@ def plot_survival():
 
     return None
 
-def profit(T,groupName = 'b'):
+def profit(T,groupName = 'b',worstCase = 'True'):
+
 
     if  groupName =='b':
         return 5*(0.36 + 0.64*np.ceil(T/7.))
     if groupName =='c':
-        return 0.8*(0.36+0.64*T)
                 
+        if worstCase is False:
+           c =  np.average(np.arange(1,7)*0.8)
+           return (0.36+c + 0.64*T)
 
-
-
+        else:
+            return 0.8*(0.36+0.64*T)
 
 
 def plot_time(T = 42):
@@ -182,13 +185,13 @@ def plot_time(T = 42):
     for i,groupName in enumerate(groups):
 
         profitB = tFunc(time,'b')
-        profitC = tFunc(time,'c')
-
+        profitC = tFunc(time,'c',worstCase = True)
+        profitBestC= tFunc(time,'c',worstCase = False)
         
         
         ax.plot(time,profitB, 'ro')
-        ax.plot(time,profitC, color = 'b')
-    
+        ax.plot(time,profitC, 'bo')
+        ax.plot(time,profitBestC, 'ko')
     fig.savefig(finalFigPath)
     plt.close()
 
