@@ -11,6 +11,7 @@ mpl.use('TkAgg')
 from matplotlib import pyplot as plt
 from verkko.plots import matplotlibHelperFunction as HF
 
+from lifelines.statistics import logrank_test
 from lifelines import KaplanMeierFitter
 from lifelines.plotting import add_at_risk_counts
 from lifelines import NelsonAalenFitter
@@ -77,7 +78,9 @@ def plot_life(order = True, N = 20):
 
                 
 def plot_survival():
-
+    '''
+    Plots the KM and NA estimates
+    '''
     pylab.ioff()
     finalFigPath = cwd + 'survival.pdf'  
     print finalFigPath
@@ -95,28 +98,31 @@ def plot_survival():
 
     ax1.set_ylabel(r"$\hat{S}(t)$", fontsize = 8)
     ax2.set_ylabel(r"$\hat{\Lambda} (t)$", fontsize = 8)
-
     ax2.set_xlabel('Days from subscription')
+
+    # lists where I store data needed for the logRank test and the printing of at_risk_counts
     logrankData = []
     kmfList = []
     for i,group in enumerate(groups):
 
+        #import fitter
         kmf = KaplanMeierFitter()
-        kmfList.append(kmf)
+        #import data from group
         durations,observed = return_unsub_time_arrays(group)
+        # append data 
         logrankData.append(durations)
         logrankData.append(observed)
-        
+        kmfList.append(kmf)
+
+        #fit
         kmf.fit(durations, event_observed = observed, label = 'Group ' +str(group),ci_labels = ['lower bound','upper bound'])
-        kmf.plot(ax = ax1, color = colors[i])
-
         naf.fit(durations, event_observed = observed, label = 'Group ' +str(group))
+        #plot
         naf.plot(ax = ax2, color = colors[i])
-
+        kmf.plot(ax = ax1, color = colors[i])
 
 
     add_at_risk_counts(kmfList[0],kmfList[1], ax=ax1)
-    from lifelines.statistics import logrank_test
 
     results = logrank_test(logrankData[0],logrankData[2],logrankData[1],logrankData[3], alpha=.99)
 
