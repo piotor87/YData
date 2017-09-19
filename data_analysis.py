@@ -280,16 +280,13 @@ def return_answer_one():
         cursor = conn.cursor()
         cmd = """
         SELECT AVG(cnt)
-        FROM (
-        
+        FROM (        
         SELECT count(*) AS cnt
         FROM subscribed 
         LEFT JOIN events USING (uid)
         WHERE (events.date < subscribed.date) AND event in ('minigame_played','song_played') 
-        GROUP BY (uid) )
-        
+        GROUP BY (uid) )      
         """
-
         cursor.execute(cmd,)
         data = cursor.fetchall()
         print data
@@ -298,17 +295,12 @@ def return_answer_one():
         cmd = """
         SELECT AVG(cnt)
         FROM (
-        
         SELECT count(*) -1  AS cnt
         FROM subscribed 
         LEFT JOIN events USING (uid)
         WHERE (events.date <= subscribed.date) AND event in ('minigame_played','song_played','subscribed') 
         GROUP BY (uid) )
-
-
-    """
-
-        
+        """
         cursor.execute(cmd,)
         data = cursor.fetchall()
         print data
