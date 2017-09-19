@@ -138,7 +138,7 @@ def plot_survival():
     ax1.set_xlabel('')
 
     ax2.set_xlabel('Days from subscription')
-
+    ax2.legend(loc = 'lower right')
     ax1.set_ylim([0,1])
     fig.savefig(finalFigPath)
     plt.close()
@@ -301,6 +301,18 @@ def return_answer_one():
         WHERE (events.date <= subscribed.date) AND event in ('minigame_played','song_played','subscribed') 
         GROUP BY (uid) )
         """
+        cmd = """
+        SELECT AVG(cnt)
+        FROM (
+        SELECT count(e.uid)  AS cnt
+        FROM subscribed AS s
+        LEFT JOIN events AS e
+        ON (e.uid = s.uid) 
+        AND (e.date < s.date) 
+        AND e.event in ('minigame_played','song_played') 
+        GROUP BY (s.uid) )
+        """
+
         cursor.execute(cmd,)
         data = cursor.fetchall()
         print data

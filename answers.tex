@@ -75,28 +75,25 @@ counting the events for each uid and then averaging.
  LEFT JOIN events USING (uid)
  WHERE (events.date < subscribed.date)
  AND event in ('minigame_played','song_played') 
- GROUP BY (uid)
- )
+ GROUP BY (uid)  )
 \end{lstlisting}
 \normalsize
 
 The result, for this implementation is different: \textbf{4.33}. This is because in this way of
 formulating the query the users who subscribed directly without first playing songs or 
-games are not counted in the statistics. In order to obtain the same result as before however, 
-one can use a simple trick to force the LEFT JOIN to return at least one event: the subscription event, which can 
-later be discarded.
+games are not counted in the statistics. However, the query can be altered to make sure also 0s are included.
 
 \footnotesize
 \begin{lstlisting}[frame=single,caption=Return SQL average - Fixed \label{code:sql_average_fixed_table}]
-
- SELECT AVG(cnt)
- FROM ( 
- SELECT count(*) -1  AS cnt
- FROM subscribed 
- LEFT JOIN events USING (uid)
- WHERE (events.date <= subscribed.date)
- AND event in ('minigame_played','song_played','subscribed') 
- GROUP BY (uid) )
+SELECT AVG(cnt)
+FROM (
+SELECT count(e.uid)  AS cnt
+FROM subscribed AS s
+LEFT JOIN events AS e
+ON (e.uid = s.uid) 
+AND (e.date < s.date) 
+AND e.event in ('minigame_played','song_played') 
+GROUP BY (s.uid) )
 \end{lstlisting}
 \normalsize
 This method returns again an average of \textbf{3.55}.
@@ -109,13 +106,22 @@ This method returns again an average of \textbf{3.55}.
 \textbf{No. Group B has a higher conversion rate, but it is statistically not significant. However, more data could
 change the picture.}\\
 
+NB. I found it unclear from the assignment whether the conversion rate meant the probability of
+playing a song after creating an account or the opposite, that is the probability of opening an account after
+playing the first song. I also checked the latter scenario, which however turned out to be statistically irrelevant.
+No user has opened an account *after* playing a song and there are only 4 users who did play a song and did not create an account.
+However, in this case, the conversion rate is $0\%$ and the problem cannot be handled statistically. I therefore decided
+to focus on the previous question: Are users of group B more likely to play a song after creating an account?
+
+\vspace{.8cm}
+
 In order to answer this question I started by doing a similar job as in code example \ref{code:pre_sub_table}, thus creating a table that stores the time stamp
 for the account creation. This allows me to check for individual uid activity after account creation. Similarly again, the SQL search is very similar to the 
 the previous question, where in this case I filter for \textit{song\_played} events after the account creation.
 
 
 \footnotesize
-\begin{lstlisting}[frame=single,caption=Return conversion rates \label{code:sql_average_fixed_table}]
+\begin{lstlisting}[frame=single,caption=Conversion rates \label{code:sql_conversion_rates}]
 SELECT COUNT(DISTINCT(uid)) 
 FROM account 
 LEFT JOIN events USING (uid)
@@ -185,12 +191,6 @@ This means that even though the current data cannot show an out-performance by
 group B, the result is on the "edge" of statistical signficance and further data should be collected in order to have stronger
 statistical results.
 
-\vspace{1cm}
-NB. I found it unclear from the assignment whether the conversion rate meant the probability of
-playing a song after creating an account or the opposite, that is the probability of opening an account after
-playing the first song. I also checked the latter scenario, which however turned out to be statistically irrelevant.
-No user has opened an account *after* playing a song. There are only 4 users who did play a song and did not create an account.
-However, in this case, the conversion rate is $0\%$ and the problem cannot be handled statistically.
 
 \section*{Question 3}
 
@@ -259,7 +259,7 @@ with a non-parametric statistic called the Kaplan-Meier estimator, which is defi
 
 What the estimator does is calculate the probability of survival by multiplying the death probabilities in each previous time interval, which
 are calculated using the number of deaths $n_{i}$ over the alive population $d_{i}$. The important aspect of this 
-estimator is that at the same time it does not require information on the actual functional form of the survival function
+estimator is that it does not require information on the actual functional form of the survival function
 and it also allows to approximate its variance. A similarly related concept is the hazard function, which measures
 the instantaneous failure rate for a single user: $ \lambda (t) = \frac{-S'(t)}{S(t)}
 $. This is in turn allows to calculate the Nelson-Aalen estimator, which estimates the cumulative function of $\lambda(t)$,that
@@ -283,7 +283,7 @@ interval.}
 Fig.\ref{fig:survival} shows the fitting of both estimators, along with the errors. We get two important pieces of information
 from this plots:
 \begin{itemize}
- \item Each group's curve lies within the confidence interval of the other group's curve, thus indicating that there is no difference in unsubscription dynamics between the two groups.
+ \item Each group's curve lies within the each other's confidence interval, thus indicating that there is no difference in unsubscription dynamics between the two groups.
  In code example \ref{code:python_logRank} we can also see the result of a statistical test
 that compares the survival curves of the two groups, showing that there is no significant statistical difference.
 
