@@ -167,7 +167,7 @@ conversion rate.
 While this value is low, it's usually not considered low enough to reach a definite conclusion. A z score of 1.65 would give a 5$\%$ probability,
 which is often considered a reliable indicator. In this case the problem seems to lie in the high conversion rate of the control group,
 which requires group B to be pretty much "perfect" in its conversion rate.
-However, it is important to notice that the previous method is based on the assumption that the binomial distribution can be approximated with a Gaussian one.
+However, it is important to note that the previous method is based on the assumption that the binomial distribution can be approximated with a Gaussian one.
 Such approximation increases in validity the higher the sample size and the closer the probability is to 1/2. In our case we do have a significant sample size, but the 
 high conversion rate limits the validity of the approximation.
 
@@ -233,6 +233,17 @@ If we assume that there is no preferred day of unsubscription in the 7 days inte
 extra revenue per user due to the asymmetry in the payments. Given also the 0.6€ weekly extra revenue for group C, we can therefore conclude that if the similarity 
 in subscription and
 unsubscription rates is confirmed, the daily payment type becomes more profitable only starting from the beginning of the fourth week. 
+However,that's not the end of the story:
+
+\begin{figure}[h!]
+\centering
+\captionsetup{justification=centering}
+\includegraphics[width=.9\columnwidth]{profit.pdf}
+\caption{Average Profit}
+\label{fig:profit}
+\end{figure}
+
+
 Is it the case with our data?
 
 \begin{figure}[h!]
@@ -322,6 +333,7 @@ To summarize we have seen that:
 We can thus conclude that, since the payment option of group C does not influence the subscription/unsubscription rates or dynamics, its
 higher weekly cost will eventually make it more profitable.
 
+If we look at the numbers at stake in our example, at the moment group B has 
 
 
 

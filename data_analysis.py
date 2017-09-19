@@ -147,7 +147,50 @@ def plot_survival():
 
     return None
 
+def profit(T,groupName = 'b'):
 
+    if  groupName =='b':
+        return 5*(0.36 + 0.64*np.ceil(T/7.))
+    if groupName =='c':
+        return 0.8*(0.36+0.64*T)
+                
+
+
+
+
+
+def plot_time(T = 42):
+    '''
+    Plots an example of the typical birth/death mechanics for groups B and C
+    '''
+    
+    tFunc = np.vectorize(profit)
+    
+    pylab.ioff()
+    finalFigPath = cwd  + 'profit.pdf'  
+    print finalFigPath
+    
+    # SET UP FIG
+    fig = HF.setFigure()
+    gs = mpl.gridspec.GridSpec(1, 1)
+
+    ax = fig.add_subplot(gs[0, 0] )
+  
+
+    groups = ['b','c'] 
+    time = np.arange(T)+1
+    for i,groupName in enumerate(groups):
+
+        profitB = tFunc(time,'b')
+        profitC = tFunc(time,'c')
+
+        
+        
+        ax.plot(time,profitB, 'ro')
+        ax.plot(time,profitC, color = 'b')
+    
+    fig.savefig(finalFigPath)
+    plt.close()
 
 
 def return_birthdays(groupName = 'b'):
