@@ -137,6 +137,9 @@ def plot_survival():
 
 
 def return_birthdays(groupName = 'b'):
+    '''
+    Returns subscription event in terms of days since the start of the experiment, where t = 0 is set with the first event recorded.
+    '''
     firstDay  = 2457085.96366898
 
     cmd = """
@@ -156,6 +159,12 @@ def return_birthdays(groupName = 'b'):
 
     
 def return_unsub_time_arrays(groupName = 'a'):
+
+    '''
+    Returns two arrays.
+    Durations: number of days (rounded up) since between subscription and unsubscription. In case of user still subscribed, the difference is calculated from the time stamp of the last event
+    Observed: Boolean array that tells us if there has been a unsubscription or not.
+    '''
 
     
     sqlitePath = cwd + '/' +  'events.sqlite'
@@ -178,24 +187,6 @@ def return_unsub_time_arrays(groupName = 'a'):
         durations = np.array([int(elem[0]) for elem in data])
         observed = np.array([bool(elem[1]) for elem in data])
     return durations,observed
-
-    #return np.array([int[elem[0][0]] for elem in data])
-
-
-def return_sub_day(groupName = 'a'):
-
-    cmd = """
-    SELECT ROUND(julianday(date) - 2457085.96366898 + 0.5 AS int) 
-    FROM events
-    WHERE event = 'subscribed'
-    AND groupName =  '""" + str(groupName) + """'"""
-
-    with sqlite3.connect(sqlitePath) as conn:
-        cursor =conn.cursor()
-        cursor.execute(cmd,)
-        data = cursor.fetchall()
-
-    return np.array([elem[0] for elem in data])
 
 
 
