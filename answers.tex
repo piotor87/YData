@@ -243,7 +243,7 @@ the instantaneous failure rate for a single user: $ \lambda (t) = \frac{-S'(t)}{
 $. This is in turn allows to calculate the Nelson-Aalen estimator, which estimates the cumulative function of $\lambda(t)$,that
 is the sum of all the risk of failure that users have experienced until time T:
 \begin{equation}
- \hat{\Lambda}(T) = \prod_{i: t_{i} < T}  \frac{d_{i}}{n_{i}}
+ \hat{\Lambda}(T) = \sum_{i: t_{i} < T}  \frac{d_{i}}{n_{i}}
 \end{equation}
 
 
