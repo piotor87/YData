@@ -16,6 +16,7 @@ from lifelines import KaplanMeierFitter
 from lifelines.plotting import add_at_risk_counts
 from lifelines import NelsonAalenFitter
 naf = NelsonAalenFitter()
+sqlitePath = cwd + '/' +  'events.sqlite'
 
 
 
@@ -180,7 +181,6 @@ def return_unsub_time_arrays(groupName = 'a'):
     '''
 
     
-    sqlitePath = cwd + '/' +  'events.sqlite'
 
     lastDay = 2457122.31041667
     cmd = """
@@ -204,7 +204,7 @@ def return_unsub_time_arrays(groupName = 'a'):
 
 
 
-def return_z_test(p1 = 326/333.,p2 = 330/333., n1= 333.,n2 = 500.):
+def return_z_test(p1 = 326/332.,p2 = 330/332., n1= 332.,n2 = 332.):
     '''
     Returns z-test score given probabilities and populations
     '''
@@ -218,33 +218,63 @@ def return_z_test(p1 = 326/333.,p2 = 330/333., n1= 333.,n2 = 500.):
     return np.abs(z)
                 
 
+
+
+
+
+
+
+
 # CONVERSION RATE FOR QUESTION 2
 def return_conversion_rates():
     
-    sqlitePath = cwd + '/' +  'events.sqlite'
 
     
     with sqlite3.connect(sqlitePath) as conn:
         cursor =conn.cursor()
-        for groupName in ['a','b']:
-            cmd = return_conversion_rate_cmd(groupName)
-            cursor.execute(cmd,)
-            data = cursor.fetchall()[0][0]
-            print groupName,round(data/float(333),5)
+        for groupName in ['a','b','c']:
+            ac = 333. - return_accounts_created(groupName)
+            sp = return_songs_played(groupName)
+
+            print groupName, ac,sp,float(sp)/ac
             
-def return_conversion_rate_cmd(groupName = 'a'):
+
+def return_accounts_created(groupName = 'a'):
+
+    with sqlite3.connect(sqlitePath) as conn:
+        cursor = conn.cursor()
+
+        cmd = """
     
+        SELECT COUNT(DISTINCT(uid))
+        FROM events  
+        WHERE uid 
+        NOT IN (SELECT DISTINCT(uid) FROM account) 
+        AND groupName ='""" + groupName + """'
+    """
+        cursor.execute(cmd,)
+        data = cursor.fetchall()[0][0]
 
-    cmd = """
-    SELECT COUNT(DISTINCT(uid)) 
-    FROM account 
-    LEFT JOIN events USING (uid)
-    WHERE events.date > account.date
-    AND event = 'song_played'
-    AND groupName = '""" + groupName + """' """
-   
+    return data
 
-    return cmd
+
+def return_songs_played(groupName = 'a'):
+    
+    with sqlite3.connect(sqlitePath) as conn:
+        cursor = conn.cursor()
+
+        cmd = """
+        SELECT COUNT(DISTINCT(uid)) 
+        FROM account 
+        LEFT JOIN events USING (uid)
+        WHERE events.date > account.date
+        AND event = 'song_played'
+        AND groupName = '""" + groupName + """' """
+        cursor.execute(cmd,)
+        data = cursor.fetchall()[0][0]
+
+    return data
+
 
 
 def return_answer_one():
@@ -326,6 +356,7 @@ def create_all():
     create_subscribed_table()
     create_unsubscription_table()
     create_account_creation_table()
+    create_first_song_played()
 def create_database():
     '''
     Functions that creates a sqlite database from the events.
@@ -360,9 +391,27 @@ def create_database():
     return None
 
 
+def create_first_song_played():
+
+    
+
+    tableName = 'events'
+    with sqlite3.connect(sqlitePath) as conn:
+        cursor = conn.cursor()
+
+        cmd = """
+        CREATE TABLE first_song AS
+        SELECT uid, min(DATE) AS date
+        FROM events
+        WHERE event = 'song_played'
+        GROUP BY uid
+        """
+
+        cursor.execute(cmd,)
+
+
 def create_subscribed_table():
 
-    sqlitePath = cwd + '/' +  'events.sqlite'
 
     tableName = 'events'
     with sqlite3.connect(sqlitePath) as conn:
@@ -382,7 +431,6 @@ def create_subscribed_table():
 
 def create_unsubscription_table():
 
-    sqlitePath = cwd + '/' +  'events.sqlite'
 
     tableName = 'events'
     with sqlite3.connect(sqlitePath) as conn:
@@ -402,7 +450,6 @@ def create_unsubscription_table():
     
 def create_account_creation_table():
 
-    sqlitePath = cwd + '/' +  'events.sqlite'
 
     
     with sqlite3.connect(sqlitePath) as conn:

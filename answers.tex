@@ -127,13 +127,23 @@ AND groupName = a/b
 \end{lstlisting}
 \normalsize
 
-The query returns 326 and 330 for groups a and b respectively. Both groups have 333 users, thus giving us a very high conversion rate for both groups:
-\begin{itemize}
- \item Group A conversion rate: $p_{a} = 0.97898$
- \item Group B conversion rate: $p_{b} = 0.99099$
-\end{itemize}
+Table.\ref{tab:conversion_rates} shows the data about the two groups.
+\begin{table}[htbp]
+\normalsize
 
-
+  \centering
+  \caption{Conversion Rates for Groups A and B}
+    \begin{tabular}{ccccc}
+    \toprule
+    \textbf{Group } & \textbf{Accounts Created} & \textbf{Songs Played} & \textbf{Conversion Rates} \\
+    \midrule
+    A & 332  &  326  & 98.193\%  \\
+    B & 332   & 330   & 99.398\%   \\
+    \bottomrule
+    \end{tabular}%
+  \label{tab:conversion_rates}%
+\end{table}%
+\normalsize
 While the numbers are similar, suggesting no significant difference between the two groups, one needs to take into account the sample size and perform
 further statistical test.
 
@@ -147,8 +157,8 @@ From there we can check the null hypothesis by performing a \textit{z test}
  z = \frac{p_{a}-p_{b}}{\sqrt{p(1-p)(\frac{1}{n_{a}} + \frac{1}{n_{b}})}}
 \end{equation}
 where $n_{a} = n_{b} = 333 $ is the sample size for each group and $ p = \frac{n_{a}p_{a} + n_{b}p_{b}}{ (n_{a} + n_{b})}$ is the weighed average of the two rates,
-which in this case is just the arithmetic mean since the two sample groups are identical in size: $p = (0.97898 + 0.99099)/2 = 0.9849445
-$. The tests returns a z score of 1.27, which gives us a $\approx 10\%$ probability for the results of group B to be generated from a distribution with higher
+which in this case is just the arithmetic mean since the two sample groups are identical in size: $p = 0.98795$
+. The tests returns a z score of 1.42, which gives us a $\approx 8\%$ probability for the results of group B to be generated from a distribution with higher
 conversion rate.
 While this value is low, it's usually not considered low enough to reach a definite conclusion. A z score of 1.65 would give a 5$\%$ probability,
 which is often considered a reliable indicator. In this case the problem seems to lie in the high conversion rate of the control group,
@@ -160,11 +170,11 @@ high conversion rate limits the validity of the approximation.
 Another way to tackle the problem is to take the control group as a reference point to see whether its statistical properties would be
 able to justify the performance of group B. This can be simply done with a binomial test, as shown in code example \ref{code:binomial_test}. In this case, 
 the probability
-of obtaining 330 or more successes with the conversion rate of the control group is $\approx 8\%$, coherently with what discussed before.
+of obtaining 330 or more successes with the conversion rate of the control group is $\approx 8\%$, coherently with what discussed before.6
 
 \footnotesize
 \begin{lstlisting}[frame=single,caption= Binomial Test\label{code:binomial_test}]
-scipy.stats.binom_test(330, 333, 326./333, alternative='greater')
+scipy.stats.binom_test(330,332,326./332,alternative='greater')
 0.079568660226078308
 \end{lstlisting}
 \normalsize
@@ -175,6 +185,12 @@ same conversion rate.
 This means that even though the current data cannot show an out-performance by 
 group B, the result is on the "edge" of statistical signficance and further data should be collected in order to have stronger
 statistical results.
+
+NB. I found it unclear from the assignment whether the conversion rate meant the number of probability of
+playing a song after creating an account or the opposite, that is the probability of opening an account after
+playing the first song. I also checked the latter scenario, which however turned out to be statistically irrelevant.
+No user has opened an account *after* playing a song. There are only 4 users who did not open an account and did play a song.
+However, in this case, the conversion rate is $0\%$ and cannot be handled statistically.
 
 \section*{Question 3}
 
@@ -284,7 +300,7 @@ results.print_summary()
 Results
    df: 1
    alpha: 0.99
-   t 0: -1
+   t 0: -1s
    test: logrank
    null distribution: chi squared
 
