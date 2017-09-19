@@ -154,14 +154,10 @@ def return_birthdays(groupName = 'b'):
     '''
     Returns subscription event in terms of days since the start of the experiment, where t = 0 is set with the first event recorded.
     '''
-    firstDay  = 2457085.96366898
 
     cmd = """
-
-    SELECT ROUND(julianday(s.date) - """ + str(firstDay) + """ - 0.5)
-    
-    FROM subscribed AS s 
-    
+    SELECT ROUND(julianday(s.date) - (SELECT (MIN(julianday(date))) FROM events) """ + '' + """ - 0.5)   
+    FROM subscribed AS s     
     WHERE uid IN (SELECT uid FROM events WHERE groupName = '""" + str(groupName) + """')"""
 
     with sqlite3.connect(sqlitePath) as conn:
@@ -180,12 +176,9 @@ def return_unsub_time_arrays(groupName = 'a'):
     Observed: Boolean array that tells us if there has been a unsubscription or not.
     '''
 
-    
-
-    lastDay = 2457122.31041667
     cmd = """
 
-    SELECT ROUND( IFNULL(julianday(u.date),""" + str(lastDay) + """) - julianday(s.date) + 0.5),
+    SELECT ROUND( IFNULL(julianday(u.date), (SELECT (MAX(julianday(date))) FROM events) ) - julianday(s.date) + 0.5),
     ROUND( IFNULL( julianday(u.date)/julianday(u.date),0))
     
     FROM subscribed AS s 
@@ -219,15 +212,12 @@ def return_z_test(p1 = 326/332.,p2 = 330/332., n1= 332.,n2 = 332.):
                 
 
 
-
-
-
-
-
-
 # CONVERSION RATE FOR QUESTION 2
 def return_conversion_rates():
-    
+
+    '''
+    Returns, for each group, the number of users who opened an account, played a song after creating the account and the conversion rate
+    '''
 
     
     with sqlite3.connect(sqlitePath) as conn:
@@ -250,9 +240,9 @@ def return_accounts_created(groupName = 'a'):
         FROM events  
         WHERE uid 
         NOT IN (SELECT DISTINCT(uid) FROM account) 
-        AND groupName ='""" + groupName + """'
+        AND groupName = (?)
     """
-        cursor.execute(cmd,)
+        cursor.execute(cmd,(groupName))
         data = cursor.fetchall()[0][0]
 
     return data
@@ -269,8 +259,9 @@ def return_songs_played(groupName = 'a'):
         LEFT JOIN events USING (uid)
         WHERE events.date > account.date
         AND event = 'song_played'
-        AND groupName = '""" + groupName + """' """
-        cursor.execute(cmd,)
+        AND groupName = (?)"""
+        cursor.execute(cmd,(groupName))
+
         data = cursor.fetchall()[0][0]
 
     return data

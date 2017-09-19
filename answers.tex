@@ -123,7 +123,7 @@ FROM account
 LEFT JOIN events USING (uid)
 WHERE events.date > account.date
 AND event = 'song_played'
-AND groupName = a/b
+AND groupName = (?)
 \end{lstlisting}
 \normalsize
 
@@ -156,7 +156,7 @@ From there we can check the null hypothesis by performing a \textit{z test}
 \begin{equation}
  z = \frac{p_{a}-p_{b}}{\sqrt{p(1-p)(\frac{1}{n_{a}} + \frac{1}{n_{b}})}}
 \end{equation}
-where $n_{a} = n_{b} = 333 $ is the sample size for each group and $ p = \frac{n_{a}p_{a} + n_{b}p_{b}}{ (n_{a} + n_{b})}$ is the weighed average of the two rates,
+where $n_{a} = n_{b} = 332 $ is the sample size for each group and $ p = \frac{n_{a}p_{a} + n_{b}p_{b}}{ (n_{a} + n_{b})}$ is the weighed average of the two rates,
 which in this case is just the arithmetic mean since the two sample groups are identical in size: $p = 0.98795$
 . The tests returns a z score of 1.42, which gives us a $\approx 8\%$ probability for the results of group B to be generated from a distribution with higher
 conversion rate.
